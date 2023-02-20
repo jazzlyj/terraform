@@ -1,6 +1,7 @@
 
 # CENTOS/RHEL
 ## install terraform
+```bash
 sudo apt update
 sudo apt install wget curl unzip
 TER_VER=`curl -s https://api.github.com/repos/hashicorp/terraform/releases/latest | grep tag_name | cut -d: -f2 | tr -d \"\,\v | awk '{$1=$1};1'`
@@ -9,7 +10,6 @@ unzip terraform_${TER_VER}_linux_amd64.zip
 sudo mv terraform /usr/local/bin/
 which terraform
 terraform --version
-
 
 sudo systemctl start libvirtd
 sudo systemctl enable libvirtd
@@ -20,7 +20,7 @@ curl -s https://api.github.com/repos/dmacvicar/terraform-provider-libvirt/releas
 unzip terraform-provider-libvirt_*_linux_amd64.zip
 rm -f terraform-provider-libvirt_*_linux_amd64.zip
 mv terraform-provider-libvirt_* ~/.terraform.d/plugins/terraform-provider-libvirt
-
+```
 
 
 
@@ -121,7 +121,9 @@ resource "libvirt_domain" "ubuntu-vm" {
 
 ```
 
-
+## install vms
+```bash
 terraform init
 terraform plan
 terraform apply -auto-approve
+```
