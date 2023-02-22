@@ -44,6 +44,9 @@ mv terraform-provider-libvirt_* ~/.terraform.d/plugins/terraform-provider-libvir
 # Ubuntu
 ## one file - ubuntu.tf
 
+
+
+
 * Create ubuntu.tf
 ```yaml
 provider "libvirt" {
@@ -120,6 +123,38 @@ resource "libvirt_domain" "ubuntu-vm" {
 }
 
 ```
+
+## Ubuntu prep
+### Disable [apparmor](https://manpages.ubuntu.com/manpages/focal/en/man7/apparmor.7.html)
+ * First check the current status of the AppArmor on Ubuntu 20.04 system:
+```bash
+sudo apparmor_status
+```
+
+* disable AppArmor for a single process/profile first list all available profiles:
+``` bash
+ls /etc/apparmor.d/
+``` 
+
+  abstractions    lsb_release      usr.bin.evince                        usr.lib.libreoffice.program.senddoc      usr.sbin.cups-browsed  usr.sbin.rsyslogd
+  disable         nvidia_modprobe  usr.bin.firefox                       usr.lib.libreoffice.program.soffice.bin  usr.sbin.cupsd         usr.sbin.tcpdump
+  force-complain  sbin.dhclient    usr.bin.man                           usr.lib.libreoffice.program.xpdfimport   usr.sbin.ippusbxd
+  local           tunables         usr.lib.libreoffice.program.oosplash  usr.lib.snapd.snap-confine.real          usr.sbin.mysqld
+
+# For example we will now disable AppArmor for a MySQL server:
+``` bash
+sudo ln -s /etc/apparmor.d/usr.sbin.mysqld /etc/apparmor.d/disable/
+apparmor_parser -R /etc/apparmor.d/disable/usr.sbin.mysqld
+``` 
+
+  Executing the apparmor_status now should not list the /usr/sbin/mysqld in the enforce mode.
+
+* To disable AppArmor completely execute:
+``` bash
+sudo systemctl disable apparmor
+```
+
+
 
 ## install vms
 ```bash
